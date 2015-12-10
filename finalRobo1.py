@@ -188,7 +188,7 @@ def RoboCommand(words):
 			print 'walking' #30cm is the distance between the two robots- we can set the final line at this point
 		api.PlayAction(76)
 	elif (strg == 'SOS'):print 'api.PlayAction(SOS )'
-	elif (strg == 'UVA'):print 'api.PlayAction(UVA )'
+	elif (strg == 'UVA'):api.PlayAction(79)
 
 #talk = 'Hello '#Professor Dugan and H R I class. Please play morse code'
 #speak(talk)

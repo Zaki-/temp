@@ -51,16 +51,16 @@ def RoboStop():
 # End of RoboStop
 def WELCOME():
 
-	welcomeMSG = "Hello. My name is Min."
+	welcomeMSG = "Hello Professor Dugan and H R I class. My name is Min."
 	MSG2=" and this is my friend Kitt."
-	MSG3=" my job, is translator. I traslate from morse code to English. "
-	MSG4="and also to Kitt. by sign language. "
+	MSG3=" I can traslate from morse code to English. "
+	MSG4="and also to Kitt. . . by sign language. "
 	MSG5="  you can play morse code whenever you ready."
 	speak(welcomeMSG)
-	print "api.PlayAction(wave)"
+	api.PlayAction(25)
 	#set delay
 	speak(MSG2)
-	print "api.PlayAction(introduce kitt)"
+	api.PlayAction(75)
 	#set delay
 	speak(MSG3)
 	speak(MSG4)
@@ -180,13 +180,13 @@ def RoboCommand(words):
 	for w in words[:]:
 	     if (w !=0):
 		strg=strg+str(w)
-	if (strg == 'WALK'):print 'api.PlayAction(W )'
-	elif (strg == 'STOP'):print 'api.PlayAction(M )'
+	if (strg == 'WALK'):api.PlayAction(77)
+	elif (strg == 'STOP'):api.PlayAction(76)
 	elif (strg == 'FINAL'):
-		print 'api.PlayAction(walk)'
+		api.PlayAction(77)
 		while int(reading(0))>30:
 			print 'walking' #30cm is the distance between the two robots- we can set the final line at this point
-		print 'api.PlayAction(stop)'
+		api.PlayAction(76)
 	elif (strg == 'SOS'):print 'api.PlayAction(SOS )'
 	elif (strg == 'UVA'):print 'api.PlayAction(UVA )'
 

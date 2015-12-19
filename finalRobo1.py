@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import sys
 import time
-
+import lcd
 #espeak - to use TTS call the function speak(talk) while the variable 'talk' is string
 from subprocess import call
 
@@ -52,7 +52,10 @@ def RoboStop():
 	walk = False
 # End of RoboStop
 def WELCOME():
-
+	lcd.lcd_byte(lcd.LCD_LINE_1, lcd.LCD_CMD)
+	lcd.lcd_string(" ", 2)
+	lcd.lcd_byte(lcd.LCD_LINE_1, lcd.LCD_CMD)
+	lcd.lcd_string("Welcome", 2)
 	welcomeMSG = "Hello . My name is Min."
 	MSG2=" and this is my friend Kitt."
 	MSG3=" I can traslate from morse code to English. "
@@ -64,13 +67,16 @@ def WELCOME():
 	speak(MSG2)
 	api.PlayAction(75)
 	#set delay
-	time.sleep(5)
+	time.sleep(1)
 	speak(MSG3)
 	speak(MSG4)
 	speak(MSG5)
+	lcd.lcd_byte(lcd.LCD_LINE_1, lcd.LCD_CMD)
+	lcd.lcd_string("Waiting for Morse Code:", 2)
 	
 
 RoboInit()
+lcd.lcd_init()
 
 rmsMAX =0
 CHUNK = 2048
@@ -79,7 +85,7 @@ CHANNELS = 1
 RATE = 48000
 RECORD_SECONDS = 5
 WAVE_OUTPUT_FILENAME = "output.wav"
-THRESHOLD = 300 #250 is working fine
+THRESHOLD = 700 #250 is working fine
 walk = False
 # vars for morse 
 ii=0	#index to check morse code-- counter for rms greater than threshold
@@ -183,17 +189,30 @@ def RoboCommand(words):
 	for w in words[:]:
 	     if (w !=0):
 		strg=strg+str(w)
-	if (strg == 'WALK'):api.PlayAction(83)
-	elif (strg == 'STOP'):api.PlayAction(82)
+	if (strg == 'WALK') or (strg == 'W'):api.PlayAction(83)
+	elif (strg == 'STOP') or (strg == 'S'):api.PlayAction(82)
 	elif (strg == 'STAND'):api.PlayAction(82)
-	elif (strg == 'SIT'):api.PlayAction(80)
+	elif (strg == 'SIT') or (strg == 'T'):api.PlayAction(80)
 	elif (strg == 'FINAL'):
 		api.PlayAction(83)
 		while int(reading(0))>30:
 			print 'walking' #30cm is the distance between the two robots- we can set the final line at this point
 		api.PlayAction(82)
-	elif (strg == 'SOS'):print 'api.PlayAction(SOS )'
-	elif (strg == 'UVA'):api.PlayAction(84)
+	elif (strg == 'SOS'):api.PlayAction(85)
+	elif (strg == 'UVA'):api.PlayAction(86)
+	elif (strg == 'END') or (strg == 'D'):
+		api.PlayAction(84)
+		time.sleep(4)
+		api.PlayAction(39)
+		print 'stoped by user ...'
+		lcd.lcd_byte(lcd.LCD_LINE_1, lcd.LCD_CMD)
+		lcd.lcd_string(" ", 2)
+		api.PlayAction(16)
+		stream.stop_stream()
+		stream.close()
+		p.terminate()
+		api.ServoShutdown()
+		sys.exit()
 
 #talk = 'Hello '#Professor Dugan and H R I class. Please play morse code'
 #speak(talk)
@@ -289,6 +308,13 @@ try:
 		strWord = ''.join(Word)
 		if (Word[:]!=[]):
 			speak(strWord)
+			lcd.lcd_byte(lcd.LCD_LINE_1, lcd.LCD_CMD)
+			lcd.lcd_string(" ", 2)
+			lcd.lcd_byte(lcd.LCD_LINE_1, lcd.LCD_CMD)
+			lcd.lcd_string(strWord, 2)
+			time.sleep(5)
+			lcd.lcd_byte(lcd.LCD_LINE_1, lcd.LCD_CMD)
+			lcd.lcd_string("Waiting for Morse code:", 2)
 		print 'strWord =',strWord
 		
 		RoboCommand(Word)
@@ -306,6 +332,8 @@ try:
 
 except (KeyboardInterrupt):
 	print 'stoped by user ...'
+	lcd.lcd_byte(lcd.LCD_LINE_1, lcd.LCD_CMD)
+	lcd.lcd_string(" ", 2)
 	api.PlayAction(16)
 	stream.stop_stream()
 	stream.close()
